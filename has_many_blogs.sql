@@ -1,12 +1,15 @@
-DROP USER IF EXISTS has_many_user;
 DROP DATABASE IF EXISTS has_many_blogs;
+DROP USER IF EXISTS has_many_user;
 
 CREATE USER has_many_user;
 CREATE DATABASE has_many_blogs OWNER has_many_user;
 
+\c has_many_blogs;
+
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS comments;
+
 
 CREATE TABLE users
 (
@@ -27,8 +30,9 @@ CREATE TABLE posts
   url character varying(510) DEFAULT NULL,
   content text DEFAULT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
-
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  user_id integer,
+  FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE comments
@@ -37,6 +41,9 @@ CREATE TABLE comments
   PRIMARY KEY (id),
   body character varying(510) DEFAULT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
-
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  user_id integer,
+  posts_id integer,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (posts_id) REFERENCES posts(id)
 );
